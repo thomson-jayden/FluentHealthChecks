@@ -1,5 +1,11 @@
 <Solution>
-  <Project Path="samples/FluentHealthChecks.Example.Api/FluentHealthChecks.Example.Api.csproj" />
-  <Project Path="src/FluentHealthChecks/FluentHealthChecks.csproj" />
-  <Project Path="tests\FluentHealthChecks.Tests\FluentHealthChecks.Tests.csproj" />
+  <Folder Name="/sampels/">
+    <Project Path="samples/FluentHealthChecks.Example.Api/FluentHealthChecks.Example.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/FluentHealthChecks/FluentHealthChecks.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests\FluentHealthChecks.Tests\FluentHealthChecks.Tests.csproj" />
+  </Folder>
 </Solution>
