@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/FluentHealthChecks.AppHost/FluentHealthChecks.AppHost.csproj" />
+  </Folder>
   <Folder Name="/sampels/">
     <Project Path="samples/FluentHealthChecks.Example.Api/FluentHealthChecks.Example.Api.csproj" />
   </Folder>
