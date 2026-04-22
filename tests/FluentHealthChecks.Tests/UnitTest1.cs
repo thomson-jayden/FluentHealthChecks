@@ -1,4 +1,4 @@
-﻿namespace FluentHealthChecks.Test;
+﻿namespace FluentHealthChecks.Tests;
 
 public class UnitTest1
 {
