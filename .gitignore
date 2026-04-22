@@ -55,3 +55,4 @@ nunit-*.xml
 
 # ignore Rider project files
 .idea/
+*.DotSettings.user
