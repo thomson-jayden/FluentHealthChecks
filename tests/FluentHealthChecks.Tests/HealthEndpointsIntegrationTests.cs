@@ -12,6 +12,8 @@ public class HealthEndpointsIntegrationTests
         var builder = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FluentHealthChecks_AppHost>();
 
+        builder.Configuration["ASPIRE_ALLOW_UNSECURED_TRANSPORT"] = "true";
+
         await using var app = await builder.BuildAsync();
         await app.StartAsync();
 
