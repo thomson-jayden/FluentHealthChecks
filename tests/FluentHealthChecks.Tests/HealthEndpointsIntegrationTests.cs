@@ -12,12 +12,17 @@ public class HealthEndpointsIntegrationTests
         var builder = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FluentHealthChecks_AppHost>();
 
-        builder.Configuration["ASPIRE_ALLOW_UNSECURED_TRANSPORT"] = "true";
-
         await using var app = await builder.BuildAsync();
         await app.StartAsync();
 
-        using var client = app.CreateHttpClient("api");
+        using var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+        using var client = new HttpClient(handler)
+        {
+            BaseAddress = app.GetEndpoint("api", "https")
+        };
         using var response = await client.GetAsync(path);
 
         Assert.True(
