@@ -24,5 +24,5 @@ else
   dotnet format "$SOLUTION" --verify-no-changes
 fi
 
-echo "✅ Lint passed"
+echo "Lint passed"
 
