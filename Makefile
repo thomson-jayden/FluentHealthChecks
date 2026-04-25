@@ -1,8 +1,8 @@
-.PHONY: all checks lint lint-fix security-scan build test
+.PHONY: all checks lint lint-fix restore security-scan build test
 
 all: checks
 
-checks: lint build test security-scan
+checks: lint test security-scan
 
 lint:
 	bash scripts/lint.sh
@@ -13,8 +13,11 @@ lint-fix:
 security-scan:
 	bash scripts/security-scan.sh
 
-build:
+restore:
+	bash scripts/restore.sh
+
+build: restore
 	bash scripts/build.sh
 
-test:
+test: build
 	bash scripts/test.sh
