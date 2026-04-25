@@ -1,3 +1,4 @@
+using FluentHealthChecks.DependencyInjection;
 using FluentHealthChecks.Example.Module;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseExampleModule(); // example module includes setup for health check endpoints
+app.UseFluentHealthChecks();
 app.UseHttpsRedirection();
 
 app.Run();
