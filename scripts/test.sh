@@ -7,4 +7,5 @@ SOLUTION="$SOLUTION_DIR/FluentHealthChecks.slnx"
 
 echo "Running tests for: $SOLUTION"
 
+dotnet dev-certs https --trust
 dotnet test "$SOLUTION" --no-build --configuration Release
