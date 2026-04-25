@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\FluentHealthChecks\FluentHealthChecks.csproj" />
+      <ProjectReference Include="..\FluentHealthChecks.Example.Module\FluentHealthChecks.Example.Module.csproj" />
     </ItemGroup>
 
 </Project>
