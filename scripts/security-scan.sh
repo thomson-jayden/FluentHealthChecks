@@ -14,7 +14,7 @@ for arg in "$@"; do
   esac
 done
 
-echo "🔒 Running security scan on $SOLUTION"
+echo "Running security scan on $SOLUTION"
 
 ARGS=(list "$SOLUTION" package --vulnerable)
 
@@ -30,9 +30,9 @@ echo "$OUTPUT"
 
 if echo "$OUTPUT" | grep -q "has the following vulnerable packages"; then
   echo ""
-  echo "❌ Vulnerable packages detected — see above for details"
+  echo "Vulnerable packages detected — see above for details"
   exit 1
 fi
 
-echo "✅ No known vulnerabilities found"
+echo "No known vulnerabilities found"
 
