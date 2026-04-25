@@ -10,7 +10,7 @@ lint:
 lint-fix:
 	bash scripts/lint.sh --fix
 
-security-scan:
+security-scan: restore
 	bash scripts/security-scan.sh
 
 restore:
