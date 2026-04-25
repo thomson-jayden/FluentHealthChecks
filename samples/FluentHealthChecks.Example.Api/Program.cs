@@ -2,7 +2,7 @@ using FluentHealthChecks.Example.Module;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddExampleModule(); // example module includes healthchecks
+builder.Services.AddExampleModule(); // example module includes health checks
 
 var app = builder.Build();
 
