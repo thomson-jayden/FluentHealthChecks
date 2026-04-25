@@ -23,6 +23,3 @@ else
   echo "  Mode: verify (no changes will be written)"
   dotnet format "$SOLUTION" --verify-no-changes
 fi
-
-echo "Lint passed"
-
