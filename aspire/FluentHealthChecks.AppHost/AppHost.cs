@@ -6,4 +6,8 @@ _ = builder
     .WithUrlForEndpoint("https", _ => new() { Url = "/health/ready", DisplayText = "Ready" })
     ;
 
+_ = builder
+    .AddAzureFunctionsProject<Projects.FluentHealthChecks_Example_FunctionApp>("functions")
+    ;
+
 builder.Build().Run();
