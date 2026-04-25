@@ -14,7 +14,7 @@ for arg in "$@"; do
   esac
 done
 
-echo "🔍 Running dotnet format on $SOLUTION"
+echo "Running dotnet format on $SOLUTION"
 
 if [ "$FIX" = true ]; then
   echo "  Mode: fix (applying changes)"
