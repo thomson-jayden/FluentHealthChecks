@@ -5,7 +5,8 @@
   <Folder Name="/sampels/">
     <Project Path="samples/FluentHealthChecks.Example.Api/FluentHealthChecks.Example.Api.csproj" />
     <Project Path="samples/FluentHealthChecks.Example.FunctionApp/FluentHealthChecks.Example.FunctionApp.csproj" />
-    <Project Path="samples/FluentHealthChecks.Example.Module/FluentHealthChecks.Example.Module.csproj" />
+    <Project Path="samples/FluentHealthChecks.Example.ModuleB/FluentHealthChecks.Example.ModuleB.csproj" />
+    <Project Path="samples\FluentHealthChecks.Example.ModuleA\FluentHealthChecks.Example.ModuleA.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/FluentHealthChecks/FluentHealthChecks.csproj" />

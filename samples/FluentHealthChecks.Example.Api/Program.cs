@@ -1,9 +1,12 @@
 using FluentHealthChecks.DependencyInjection;
-using FluentHealthChecks.Example.Module;
+using FluentHealthChecks.Example.ModuleA;
+using FluentHealthChecks.Example.ModuleB;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddExampleModule(); // example module includes health checks
+builder.Services
+    .AddExampleModuleA()
+    .AddExampleModuleB();
 
 var app = builder.Build();
 

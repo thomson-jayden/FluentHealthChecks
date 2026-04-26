@@ -1,25 +1,26 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FluentHealthChecks.Example.Module;
+namespace FluentHealthChecks.Example.ModuleA;
 
 public static class DependencyInjection
 {
-    public static void AddExampleModule(this IServiceCollection services)
+    public static IServiceCollection AddExampleModuleA(this IServiceCollection services)
     {
         // Add module health checks
         services.AddHealthChecks()
             .AddCheck(
-                "self",
+                "selfA",
                 () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy(),
                 tags: ["live"])
             .AddCheck(
-                "ready",
+                "readyA",
                 () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy(),
                 tags: ["ready"]);
+        return services;
     }
 
-    public static void UseExampleModule(this WebApplication app)
+    public static void UseExampleModuleA(this WebApplication app)
     {
     }
 }
