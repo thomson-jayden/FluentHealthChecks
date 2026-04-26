@@ -29,6 +29,10 @@ public sealed class AspireAppFixture : IAsyncLifetime
 
         _apiBaseAddress = app.GetEndpoint("api", "https");
         _functionsBaseAddress = app.GetEndpoint("functions", "http");
+
+        await WaitForEndpointAsync(_apiBaseAddress, "/health/live", TimeSpan.FromSeconds(30), allowInvalidCertificate: true);
+        await WaitForEndpointAsync(_functionsBaseAddress, "/api/health/live", TimeSpan.FromSeconds(30));
+
         _app = app;
     }
 
@@ -105,5 +109,54 @@ public sealed class AspireAppFixture : IAsyncLifetime
         {
             throw new TimeoutException($"Resource '{resourceName}' did not reach state '{state}' within {timeout}.", ex);
         }
+    }
+
+    private static async Task WaitForEndpointAsync(Uri baseAddress, string relativePath, TimeSpan timeout, bool allowInvalidCertificate = false)
+    {
+        using var timeoutTokenSource = new CancellationTokenSource(timeout);
+        using var client = CreateProbeClient(baseAddress, allowInvalidCertificate);
+
+        while (!timeoutTokenSource.IsCancellationRequested)
+        {
+            try
+            {
+                using var response = await client.GetAsync(relativePath, timeoutTokenSource.Token);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+            }
+            catch (HttpRequestException)
+            {
+                // The server is not accepting requests yet; retry until the timeout expires.
+            }
+            catch (TaskCanceledException) when (!timeoutTokenSource.IsCancellationRequested)
+            {
+                // Individual probe timed out before the overall readiness timeout; retry.
+            }
+
+            await Task.Delay(TimeSpan.FromMilliseconds(250), timeoutTokenSource.Token);
+        }
+
+        throw new TimeoutException($"Endpoint '{new Uri(baseAddress, relativePath)}' did not return success within {timeout}.");
+    }
+
+    private static HttpClient CreateProbeClient(Uri baseAddress, bool allowInvalidCertificate)
+    {
+        if (!allowInvalidCertificate)
+        {
+            return new HttpClient { BaseAddress = baseAddress };
+        }
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        return new HttpClient(handler)
+        {
+            BaseAddress = baseAddress
+        };
     }
 }
