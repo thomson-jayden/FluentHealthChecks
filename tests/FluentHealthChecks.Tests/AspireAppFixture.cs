@@ -1,5 +1,3 @@
-using Aspire.Hosting;
-using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
 
 namespace FluentHealthChecks.Tests;
@@ -14,26 +12,25 @@ public sealed class AspireAppFixture : IAsyncLifetime
     {
         var builder = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FluentHealthChecks_AppHost>();
-        var azuriteResourceName = GetAzuriteResourceName(builder);
 
         var app = await builder.BuildAsync();
-        await app.StartAsync();
-
-        if (azuriteResourceName is not null)
+        try
         {
-            await WaitForResourceHealthyAsync(app, azuriteResourceName, TimeSpan.FromSeconds(30));
+            await app.StartAsync();
+
+            _apiBaseAddress = app.GetEndpoint("api", "https");
+            _functionsBaseAddress = app.GetEndpoint("functions", "http");
+
+            await WaitForEndpointAsync(_apiBaseAddress, "/health/live", TimeSpan.FromSeconds(30), allowInvalidCertificate: true);
+            await WaitForEndpointAsync(_functionsBaseAddress, "/api/health/live", TimeSpan.FromSeconds(30));
+
+            _app = app;
         }
-
-        await WaitForResourceStateAsync(app, "api", KnownResourceStates.Running, TimeSpan.FromSeconds(30));
-        await WaitForResourceStateAsync(app, "functions", KnownResourceStates.Running, TimeSpan.FromSeconds(30));
-
-        _apiBaseAddress = app.GetEndpoint("api", "https");
-        _functionsBaseAddress = app.GetEndpoint("functions", "http");
-
-        await WaitForEndpointAsync(_apiBaseAddress, "/health/live", TimeSpan.FromSeconds(30), allowInvalidCertificate: true);
-        await WaitForEndpointAsync(_functionsBaseAddress, "/api/health/live", TimeSpan.FromSeconds(30));
-
-        _app = app;
+        catch
+        {
+            await app.DisposeAsync();
+            throw;
+        }
     }
 
     public async Task DisposeAsync()
@@ -65,52 +62,6 @@ public sealed class AspireAppFixture : IAsyncLifetime
         };
     }
 
-    private static string? GetAzuriteResourceName(IDistributedApplicationTestingBuilder builder)
-    {
-        return builder.Resources
-            .Where(static resource =>
-            {
-                var typeName = resource.GetType().FullName;
-
-                return typeName is not null &&
-                    (typeName.Contains("AzureStorageEmulatorResource", StringComparison.Ordinal) ||
-                     typeName.Contains("AzureStorageResource", StringComparison.Ordinal));
-            })
-            .Select(static resource => resource.Name)
-            .FirstOrDefault()
-            ?? builder.Resources
-                .Select(static resource => resource.Name)
-                .FirstOrDefault(static name => name.StartsWith("funcstorage", StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static async Task WaitForResourceHealthyAsync(DistributedApplication app, string resourceName, TimeSpan timeout)
-    {
-        using var timeoutTokenSource = new CancellationTokenSource(timeout);
-
-        try
-        {
-            await app.ResourceNotifications.WaitForResourceHealthyAsync(resourceName, timeoutTokenSource.Token);
-        }
-        catch (OperationCanceledException ex) when (timeoutTokenSource.IsCancellationRequested)
-        {
-            throw new TimeoutException($"Resource '{resourceName}' did not become healthy within {timeout}.", ex);
-        }
-    }
-
-    private static async Task WaitForResourceStateAsync(DistributedApplication app, string resourceName, string state, TimeSpan timeout)
-    {
-        using var timeoutTokenSource = new CancellationTokenSource(timeout);
-
-        try
-        {
-            await app.ResourceNotifications.WaitForResourceAsync(resourceName, state, timeoutTokenSource.Token);
-        }
-        catch (OperationCanceledException ex) when (timeoutTokenSource.IsCancellationRequested)
-        {
-            throw new TimeoutException($"Resource '{resourceName}' did not reach state '{state}' within {timeout}.", ex);
-        }
-    }
-
     private static async Task WaitForEndpointAsync(Uri baseAddress, string relativePath, TimeSpan timeout, bool allowInvalidCertificate = false)
     {
         using var timeoutTokenSource = new CancellationTokenSource(timeout);
@@ -135,8 +86,19 @@ public sealed class AspireAppFixture : IAsyncLifetime
             {
                 // Individual probe timed out before the overall readiness timeout; retry.
             }
+            catch (TaskCanceledException) when (timeoutTokenSource.IsCancellationRequested)
+            {
+                break;
+            }
 
-            await Task.Delay(TimeSpan.FromMilliseconds(250), timeoutTokenSource.Token);
+            try
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(250), timeoutTokenSource.Token);
+            }
+            catch (OperationCanceledException) when (timeoutTokenSource.IsCancellationRequested)
+            {
+                break;
+            }
         }
 
         throw new TimeoutException($"Endpoint '{new Uri(baseAddress, relativePath)}' did not return success within {timeout}.");
