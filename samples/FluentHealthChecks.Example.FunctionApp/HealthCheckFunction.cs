@@ -5,6 +5,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FluentHealthChecks.Example.FunctionApp;
 
+// TODO: add function registration for healthchecks in lib
+
 public class HealthCheckFunction(HealthCheckService healthCheckService)
 {
     [Function(nameof(Live))]
