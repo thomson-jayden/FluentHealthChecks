@@ -1,3 +1,4 @@
+using FluentHealthChecks.DependencyInjection;
 using FluentHealthChecks.Example.ModuleA;
 using FluentHealthChecks.Example.ModuleB;
 using Microsoft.Azure.Functions.Worker;
@@ -15,6 +16,7 @@ builder.Services
 
 builder.Services
     .AddExampleModuleA()
-    .AddExampleModuleB();
+    .AddExampleModuleB()
+    .AddFluentHealthCheckFunctions();
 
 builder.Build().Run();

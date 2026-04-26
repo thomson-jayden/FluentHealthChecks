@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FluentHealthChecks.Example.FunctionApp;
-
-// TODO: add function registration for healthchecks in lib
+namespace FluentHealthChecks.AzureFunctions;
 
 public class HealthCheckFunction(HealthCheckService healthCheckService)
 {
@@ -47,3 +45,4 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
                 StatusCode = StatusCodes.Status503ServiceUnavailable
             };
 }
+

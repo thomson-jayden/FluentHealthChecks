@@ -2,7 +2,7 @@
 
 namespace FluentHealthChecks.DependencyInjection;
 
-public static class DependencyInjection
+public static class WebApiDependencyInjection
 {
     public static void UseFluentHealthChecks(this WebApplication app)
     {
