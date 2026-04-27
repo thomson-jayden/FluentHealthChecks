@@ -12,7 +12,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health/live")] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
-            check => check.Tags.Contains("live"));
+            check => check.Tags.Contains(Constants.LiveTag));
 
         return StatusResult(result.Status);
     }
@@ -22,7 +22,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health/ready")] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
-            check => check.Tags.Contains("ready"));
+            check => check.Tags.Contains(Constants.ReadyTag));
 
         return StatusResult(result.Status);
     }
@@ -32,7 +32,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
-            check => check.Tags.Contains("live") || check.Tags.Contains("ready"));
+            check => check.Tags.Contains(Constants.LiveTag) || check.Tags.Contains(Constants.ReadyTag));
 
         return StatusResult(result.Status);
     }

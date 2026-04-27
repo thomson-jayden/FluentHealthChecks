@@ -8,18 +8,18 @@ public static class WebApiDependencyInjection
     {
         app.MapHealthChecks("/health/live", new()
         {
-            Predicate = check => check.Tags.Contains("live")
+            Predicate = check => check.Tags.Contains(Constants.LiveTag)
         });
 
         app.MapHealthChecks("/health/ready", new()
         {
-            Predicate = check => check.Tags.Contains("ready")
+            Predicate = check => check.Tags.Contains(Constants.ReadyTag)
         });
 
         // Keep /health as a combined endpoint for both liveness and readiness.
         app.MapHealthChecks("/health", new()
         {
-            Predicate = check => check.Tags.Contains("live") || check.Tags.Contains("ready")
+            Predicate = check => check.Tags.Contains(Constants.LiveTag) || check.Tags.Contains(Constants.ReadyTag)
         });
     }
 }
