@@ -45,4 +45,3 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
                 StatusCode = StatusCodes.Status503ServiceUnavailable
             };
 }
-
