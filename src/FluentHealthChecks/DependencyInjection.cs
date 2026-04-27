@@ -1,11 +1,27 @@
 using FluentHealthChecks.AzureFunctions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FluentHealthChecks;
 
 public static class DependencyInjection
 {
+    public static IHealthChecksBuilder AddFluentHealthChecks(this IServiceCollection services)
+    {
+        var healthChecksBuilder = services.AddHealthChecks()
+            .AddCheck(
+                $"self{Guid.NewGuid()}",
+                () => HealthCheckResult.Healthy(),
+                tags: [Constants.LiveTag])
+            .AddCheck(
+                $"ready{Guid.NewGuid()}",
+                () => HealthCheckResult.Healthy(),
+                tags: [Constants.ReadyTag]);
+        
+        return healthChecksBuilder;
+    }
+    
     public static WebApplication UseFluentHealthChecks(this WebApplication app)
     {
         app.MapHealthChecks(Constants.LiveEndpoint, new()
