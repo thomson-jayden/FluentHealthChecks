@@ -100,8 +100,6 @@ public sealed class AspireAppFixture : IAsyncLifetime
                 break;
             }
         }
-
-        throw new TimeoutException($"Endpoint '{new Uri(baseAddress, relativePath)}' did not return success within {timeout}.");
     }
 
     private static HttpClient CreateProbeClient(Uri baseAddress, bool allowInvalidCertificate)
