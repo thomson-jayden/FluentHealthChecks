@@ -1,4 +1,4 @@
-using FluentHealthChecks.DependencyInjection;
+using FluentHealthChecks;
 using FluentHealthChecks.Example.ModuleA;
 using FluentHealthChecks.Example.ModuleB;
 

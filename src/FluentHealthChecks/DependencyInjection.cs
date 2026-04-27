@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+using FluentHealthChecks.AzureFunctions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace FluentHealthChecks.DependencyInjection;
+namespace FluentHealthChecks;
 
-public static class WebApiDependencyInjection
+public static class DependencyInjection
 {
-    public static void UseFluentHealthChecks(this WebApplication app)
+    public static WebApplication UseFluentHealthChecks(this WebApplication app)
     {
         app.MapHealthChecks(Constants.LiveEndpoint, new()
         {
@@ -21,5 +23,13 @@ public static class WebApiDependencyInjection
         {
             Predicate = check => check.Tags.Contains(Constants.LiveTag) || check.Tags.Contains(Constants.ReadyTag)
         });
+        
+        return app;
+    }
+    
+    public static IServiceCollection UseFluentHealthChecks(this IServiceCollection services)
+    {
+        services.AddSingleton<HealthCheckFunction>();
+        return services;
     }
 }
