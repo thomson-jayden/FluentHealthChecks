@@ -6,18 +6,18 @@ public static class WebApiDependencyInjection
 {
     public static void UseFluentHealthChecks(this WebApplication app)
     {
-        app.MapHealthChecks("/health/live", new()
+        app.MapHealthChecks(Constants.LiveEndpoint, new()
         {
             Predicate = check => check.Tags.Contains(Constants.LiveTag)
         });
 
-        app.MapHealthChecks("/health/ready", new()
+        app.MapHealthChecks(Constants.ReadyEndpoint, new()
         {
             Predicate = check => check.Tags.Contains(Constants.ReadyTag)
         });
 
         // Keep /health as a combined endpoint for both liveness and readiness.
-        app.MapHealthChecks("/health", new()
+        app.MapHealthChecks(Constants.HealthEndpoint, new()
         {
             Predicate = check => check.Tags.Contains(Constants.LiveTag) || check.Tags.Contains(Constants.ReadyTag)
         });

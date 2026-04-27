@@ -9,7 +9,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
 {
     [Function(nameof(Live))]
     public async Task<IActionResult> Live(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health/live")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = Constants.LiveEndpoint)] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
             check => check.Tags.Contains(Constants.LiveTag));
@@ -19,7 +19,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
 
     [Function(nameof(Ready))]
     public async Task<IActionResult> Ready(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health/ready")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = Constants.ReadyEndpoint)] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
             check => check.Tags.Contains(Constants.ReadyTag));
@@ -29,7 +29,7 @@ public class HealthCheckFunction(HealthCheckService healthCheckService)
 
     [Function(nameof(Health))]
     public async Task<IActionResult> Health(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = Constants.HealthEndpoint)] HttpRequest req)
     {
         var result = await healthCheckService.CheckHealthAsync(
             check => check.Tags.Contains(Constants.LiveTag) || check.Tags.Contains(Constants.ReadyTag));
